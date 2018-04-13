@@ -59,14 +59,25 @@ export default class App extends Component<Props> {
 
     commandHandler={
         save:(id,args)=>{
-          let p=  AsyncStorage.setItem(args.key,args.value);
-          p.then(e=>{
+
+          AsyncStorage.setItem(args.key,args.value,e=>{
               if(e){
                   this.sendError(id,e)
               }else{
                   this.sendReponse(id,'saved')
               }
-          })
+          });
+        },
+        load:(id,args)=>{
+
+           AsyncStorage.getItem(args.key,(e,v)=>{
+                if(e){
+                    this.sendError(id,e)
+                }else{
+                    alert(v)
+                    this.sendReponse(id,v)
+                }
+            });
         }
     }
 
