@@ -1,20 +1,20 @@
 import {AsyncStorage} from "react-native";
 
 let StorageHandler = {
-    save(id, args) {
 
+    save(id, args) {
+        alert(typeof args.value)
         AsyncStorage.setItem(args.key, args.value, e => {
             if (e) {
                 this.sendError(id, e)
             } else {
-                console.log(this.sendReponse)
-                this.sendReponse(id, 'saved')
+                console.log('saved')
+                this.sendReponse(id, JSON.stringify('saved'))
             }
         });
     },
-    load(id, args) {
-
-        AsyncStorage.getItem(args.key, (e, v) => {
+    load(id, key) {
+        AsyncStorage.getItem(key, (e, v) => {
             if (e) {
                 this.sendError(id, e)
             } else {
@@ -22,23 +22,33 @@ let StorageHandler = {
             }
         });
     },
-    getAllKeys(id) {
-        AsyncStorage.getAllKeys((e,kSet)=>{
-            if(e){
+    remove(id, key) {
+
+        AsyncStorage.removeItem(key, (e) => {
+            if (e) {
                 this.sendError(id, e)
-            }else{
+            } else {
+                this.sendReponse(id, JSON.stringify('ok'))
+            }
+        });
+    },
+    getAllKeys(id) {
+        AsyncStorage.getAllKeys((e, kSet) => {
+            if (e) {
+                this.sendError(id, e)
+            } else {
                 console.log(kSet)
-                this.sendReponse(id, kSet)
+                this.sendReponse(id, JSON.stringify(kSet))
             }
         })
     },
     multiGet(id, args) {
-        AsyncStorage.multiGet(args,(e,ret)=>{
-            if(e){
+        AsyncStorage.multiGet(args, (e, ret) => {
+            if (e) {
                 this.sendError(id, e)
-            }else{
+            } else {
                 console.log(ret)
-                this.sendReponse(id, ret)
+                this.sendReponse(id, JSON.stringify(ret.map(v=>[v[0],JSON.parse(v[1])])))
             }
         })
     }
