@@ -13,6 +13,7 @@ import {
     WebView,
     AsyncStorage
 } from 'react-native';
+import StorageHandler from './StorageHandler';
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' +
@@ -27,19 +28,19 @@ const TYPE_RESPONSE = 'response'
 
 export default class App extends Component<Props> {
 
-
-
-    tryInvoke() {
+    exec() {
         var args = Array.prototype.slice.call(arguments);
-        var func = args.shift();
+        var handler = args.shift();
+        var funcName = args.shift();
+        var func=handler[funcName];
         try {
-            return func.apply(null, args);
+            return func.apply(handler, args);
         } catch (err) {
             console.error(err);
         }
     }
 
-    sendError(id, err) {
+    sendError=(id, err)=> {
         let payload={
             id: id,
             type: TYPE_RESPONSE,
@@ -48,7 +49,7 @@ export default class App extends Component<Props> {
         this.refs.webviewRef.postMessage(JSON.stringify(payload))
     }
 
-    sendReponse(id, data) {
+    sendReponse=(id, data)=> {
         let payload={
             id: id,
             type: TYPE_RESPONSE,
@@ -58,36 +59,17 @@ export default class App extends Component<Props> {
     }
 
     commandHandler={
-        save:(id,args)=>{
-
-          AsyncStorage.setItem(args.key,args.value,e=>{
-              if(e){
-                  this.sendError(id,e)
-              }else{
-                  this.sendReponse(id,'saved')
-              }
-          });
-        },
-        load:(id,args)=>{
-
-           AsyncStorage.getItem(args.key,(e,v)=>{
-                if(e){
-                    this.sendError(id,e)
-                }else{
-                    alert(v)
-                    this.sendReponse(id,v)
-                }
-            });
-        }
+        ...StorageHandler,
+        sendError:this.sendError,
+        sendReponse:this.sendReponse,
     }
 
     handlerMessage=(event) =>{
         var payload = JSON.parse(event.nativeEvent.data)
-        this.tryInvoke(this.commandHandler[payload.command], payload.id, payload.args)
+        this.exec(this.commandHandler,payload.command, payload.id, payload.args)
     }
 
     render() {
-
         return (
             <WebView
                 ref={'webviewRef'}
