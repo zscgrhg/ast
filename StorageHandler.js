@@ -6,7 +6,7 @@ let StorageHandler={
 
             AsyncStorage.setItem(args.key, args.value, e => {
                 if (e) {
-                    sendError(id, e)
+                    this.sendError(id, e)
                 } else {
                     console.log(this.sendReponse)
                     this.sendReponse(id, 'saved')
