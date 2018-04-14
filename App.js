@@ -26,6 +26,10 @@ type Props = {};
 const TYPE_REQUEST = 'command'
 const TYPE_RESPONSE = 'response'
 
+
+
+
+
 export default class App extends Component<Props> {
 
     exec() {
@@ -69,15 +73,18 @@ export default class App extends Component<Props> {
         this.exec(this.commandHandler,payload.command, payload.id, payload.args)
     }
 
+
     render() {
         return (
             <WebView
+
                 ref={'webviewRef'}
                 //source={require('./pages/hello.html')}
                 javaScriptEnabled={true}
                 source={{uri: 'http://192.168.1.3:10080/hello.html'}}
                 style={styles.webView}
                 onMessage={e=>this.handlerMessage(e)}
+
             />
         );
     }
