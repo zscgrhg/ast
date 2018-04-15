@@ -20,11 +20,20 @@ let StorageHandler = {
     remove(id, key) {
         StringifyStorage.remove(key, currying(this.sendReponse, id), currying(this.sendError, id))
     },
-    getAllKeys(id) {
-        StringifyStorage.getAllKeys(currying(this.sendReponse, id), currying(this.sendError, id))
+    multiSet(id, keyValuePairs) {
+        StringifyStorage.multiSet(keyValuePairs, currying(this.sendReponse, id), currying(this.sendError, id))
     },
     multiGet(id, args) {
         StringifyStorage.multiGet(args, currying(this.sendReponse, id), currying(this.sendError, id))
+    },
+    multiRemove: function (id,kArr) {
+        StringifyStorage.multiRemove(kArr,currying(this.sendReponse,id),currying(this.sendError,id))
+    },
+    getAllKeys(id) {
+        StringifyStorage.getAllKeys(currying(this.sendReponse, id), currying(this.sendError, id))
+    },
+    clear: function (id) {
+        StringifyStorage.clear(currying(this.sendReponse,id),currying(this.sendError,id))
     }
 }
 export default StorageHandler
