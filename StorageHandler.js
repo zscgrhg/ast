@@ -1,56 +1,30 @@
-import {AsyncStorage} from "react-native";
+import StringifyStorage from "./StringifyStorage";
+
+function currying() {
+    var args = Array.prototype.slice.call(arguments);
+    var func = args.shift();
+    return function () {
+        var argsAppend = Array.prototype.slice.call(arguments);
+        return func.apply(null, args.concat(argsAppend));
+    }
+}
 
 let StorageHandler = {
 
     save(id, args) {
-        alert(typeof args.value)
-        AsyncStorage.setItem(args.key, args.value, e => {
-            if (e) {
-                this.sendError(id, e)
-            } else {
-                console.log('saved')
-                this.sendReponse(id, JSON.stringify('saved'))
-            }
-        });
+        StringifyStorage.save(args.key, args.value, currying(this.sendReponse, id), currying(this.sendError, id));
     },
     load(id, key) {
-        AsyncStorage.getItem(key, (e, v) => {
-            if (e) {
-                this.sendError(id, e)
-            } else {
-                this.sendReponse(id, v)
-            }
-        });
+        StringifyStorage.load(key, currying(this.sendReponse, id), currying(this.sendError, id))
     },
     remove(id, key) {
-
-        AsyncStorage.removeItem(key, (e) => {
-            if (e) {
-                this.sendError(id, e)
-            } else {
-                this.sendReponse(id, JSON.stringify('ok'))
-            }
-        });
+        StringifyStorage.remove(key, currying(this.sendReponse, id), currying(this.sendError, id))
     },
     getAllKeys(id) {
-        AsyncStorage.getAllKeys((e, kSet) => {
-            if (e) {
-                this.sendError(id, e)
-            } else {
-                console.log(kSet)
-                this.sendReponse(id, JSON.stringify(kSet))
-            }
-        })
+        StringifyStorage.getAllKeys(currying(this.sendReponse, id), currying(this.sendError, id))
     },
     multiGet(id, args) {
-        AsyncStorage.multiGet(args, (e, ret) => {
-            if (e) {
-                this.sendError(id, e)
-            } else {
-                console.log(ret)
-                this.sendReponse(id, JSON.stringify(ret.map(v=>[v[0],JSON.parse(v[1])])))
-            }
-        })
+        StringifyStorage.multiGet(args, currying(this.sendReponse, id), currying(this.sendError, id))
     }
 }
 export default StorageHandler

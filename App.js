@@ -37,11 +37,7 @@ export default class App extends Component<Props> {
         var handler = args.shift();
         var funcName = args.shift();
         var func=handler[funcName];
-        try {
-            return func.apply(handler, args);
-        } catch (err) {
-            console.error(err);
-        }
+        return func.apply(handler, args);
     }
 
     sendError=(id, err)=> {
