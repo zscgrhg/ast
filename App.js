@@ -78,7 +78,7 @@ export default class App extends Component<Props> {
                 ref={'webviewRef'}
                 //source={require('./pages/hello.html')}
                 javaScriptEnabled={true}
-                source={{uri: 'http://192.168.1.3:10080/hello.html'}}
+                source={{uri: 'http://47.88.5.214:10080/hello.html'}}
                 style={styles.webView}
                 onMessage={e=>this.handlerMessage(e)}
 
